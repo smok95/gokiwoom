@@ -6,35 +6,41 @@ import (
 	"unsafe"
 )
 
-type OnEventConnect func(errCode int)
+type OnEventConnect func(errCode int32)
 type OnReceiveTrData func(scrNo string, rqName string, trCode string,
-	recordName string, prevNext string, dataLength int, errorCode string,
+	recordName string, prevNext string, dataLength int32, errorCode string,
 	message string, splmMsg string)
 
 var (
 	kw = syscall.NewLazyDLL("kw_.dll")
 
-	kw_CommConnect                = kw.NewProc("kw_CommConnect")
-	kw_CommRqDataA                = kw.NewProc("kw_CommRqDataA")
-	kw_CommRqDataW                = kw.NewProc("kw_CommRqDataW")
-	kw_GetLoginInfoA              = kw.NewProc("kw_GetLoginInfoA")
-	kw_SendOrderA                 = kw.NewProc("kw_SendOrderA")
-	kw_SendOrderFOA               = kw.NewProc("kw_SendOrderFOA")
-	kw_SetInputValueA             = kw.NewProc("kw_SetInputValueA")
-	kw_SetInputValueW             = kw.NewProc("kw_SetInputValueW")
-	kw_DisconnectRealDataA        = kw.NewProc("kw_DisconnectRealDataA")
-	kw_GetRepeatCntA              = kw.NewProc("kw_GetRepeatCntA")
-	kw_CommKwRqDataA              = kw.NewProc("kw_CommKwRqDataA")
-	kw_GetAPIModulePathA          = kw.NewProc("kw_GetAPIModulePathA")
-	kw_GetCodeListByMarketA       = kw.NewProc("kw_GetCodeListByMarketA")
-	kw_GetConnectState            = kw.NewProc("kw_GetConnectState")
-	kw_GetMasterCodeNameA         = kw.NewProc("kw_GetMasterCodeNameA")
-	kw_GetMasterListedStockCntA   = kw.NewProc("kw_GetMasterListedStockCntA")
-	kw_GetMasterConstructionA     = kw.NewProc("kw_GetMasterConstructionA")
-	kw_GetMasterListedStockDateA  = kw.NewProc("kw_GetMasterListedStockDateA")
-	kw_GetMasterLastPriceA        = kw.NewProc("kw_GetMasterLastPriceA")
-	kw_GetMasterStockStateA       = kw.NewProc("kw_GetMasterStockStateA")
-	kw_GetDataCountA              = kw.NewProc("kw_GetDataCountA")
+	kw_CommConnect         = kw.NewProc("kw_CommConnect")
+	kw_CommRqDataA         = kw.NewProc("kw_CommRqDataA")
+	kw_CommRqDataW         = kw.NewProc("kw_CommRqDataW")
+	kw_GetLoginInfoA       = kw.NewProc("kw_GetLoginInfoA")
+	kw_SendOrderA          = kw.NewProc("kw_SendOrderA")
+	kw_SendOrderW          = kw.NewProc("kw_SendOrderW")
+	kw_SendOrderFOA        = kw.NewProc("kw_SendOrderFOA")
+	kw_SendOrderFOW        = kw.NewProc("kw_SendOrderFOW")
+	kw_SetInputValueA      = kw.NewProc("kw_SetInputValueA")
+	kw_SetInputValueW      = kw.NewProc("kw_SetInputValueW")
+	kw_DisconnectRealDataA = kw.NewProc("kw_DisconnectRealDataA")
+	kw_DisconnectRealDataW = kw.NewProc("kw_DisconnectRealDataW")
+	kw_GetRepeatCntA       = kw.NewProc("kw_GetRepeatCntA")
+	kw_GetRepeatCntW       = kw.NewProc("kw_GetRepeatCntW")
+	//kw_CommKwRqDataA              = kw.NewProc("kw_CommKwRqDataA")
+	kw_CommKwRqDataW             = kw.NewProc("kw_CommKwRqDataW")
+	kw_GetAPIModulePathA         = kw.NewProc("kw_GetAPIModulePathA")
+	kw_GetCodeListByMarketA      = kw.NewProc("kw_GetCodeListByMarketA")
+	kw_GetConnectState           = kw.NewProc("kw_GetConnectState")
+	kw_GetMasterCodeNameA        = kw.NewProc("kw_GetMasterCodeNameA")
+	kw_GetMasterListedStockCntA  = kw.NewProc("kw_GetMasterListedStockCntA")
+	kw_GetMasterConstructionA    = kw.NewProc("kw_GetMasterConstructionA")
+	kw_GetMasterListedStockDateA = kw.NewProc("kw_GetMasterListedStockDateA")
+	kw_GetMasterLastPriceA       = kw.NewProc("kw_GetMasterLastPriceA")
+	kw_GetMasterStockStateA      = kw.NewProc("kw_GetMasterStockStateA")
+	//kw_GetDataCountA              = kw.NewProc("kw_GetDataCountA")
+	kw_GetDataCountW              = kw.NewProc("kw_GetDataCountW")
 	kw_GetOutputValueA            = kw.NewProc("kw_GetOutputValueA")
 	kw_GetCommDataA               = kw.NewProc("kw_GetCommDataA")
 	kw_GetCommDataW               = kw.NewProc("kw_GetCommDataW")
@@ -86,7 +92,7 @@ var (
 	kw_Disconnect                 = kw.NewProc("kw_Disconnect")
 	kw_SetCharsetUtf8             = kw.NewProc("kw_SetCharsetUtf8")
 	/*
-		typedef void (*kw_OnReceiveTrDataW)(PCWSTR sScrNo, PCWSTR sRQName,
+		typedef void (*kw_OnReceiveTrDataW)(ScrNo, PCWSTR sRQName,
 			PCWSTR sTrCode, PCWSTR sRecordName, PCWSTR sPrevNext, long nDataLength,
 			PCWSTR sErrorCode, PCWSTR sMessage, PCWSTR sSplmMsg);
 		typedef void (*kw_OnReceiveTrDataA)(PCSTR sScrNo, PCSTR sRQName,
@@ -114,9 +120,9 @@ var (
 			PCSTR strType, PCSTR strConditionName, PCSTR strConditionIndex);
 
 		typedef void (*kw_OnReceiveTrConditionW)(PCWSTR sScrNo,
-			PCWSTR strCodeList, PCWSTR strConditionName, int nIndex, int nNext);
+			PCWSTR strCodeList, PCWSTR strConditionName, int32 nIndex, int32 nNext);
 		typedef void (*kw_OnReceiveTrConditionA)(PCSTR sScrNo,
-			PCSTR strCodeList, PCSTR strConditionName, int nIndex, int nNext);
+			PCSTR strCodeList, PCSTR strConditionName, int32 nIndex, int32 nNext);
 
 		typedef void (*kw_OnReceiveConditionVerW)(long lRet, PCWSTR sMsg);
 		typedef void (*kw_OnReceiveConditionVerA)(long lRet, PCSTR sMsg);
@@ -124,61 +130,177 @@ var (
 
 )
 
-// s2u string -> wchar_t*
-func s2u(s string) uintptr {
-	return uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(s)))
+// wstr string -> wchar_t*
+func wstr(s string) uintptr {
+	u, _ := syscall.UTF16PtrFromString(s)
+	return uintptr(unsafe.Pointer(u))
 }
 
-// s2b string -> char*
-func s2b(s string) uintptr {
-	return uintptr(unsafe.Pointer(syscall.StringBytePtr(s)))
+// astr string -> char*
+func astr(s string) uintptr {
+	b, _ := syscall.BytePtrFromString(s)
+	return uintptr(unsafe.Pointer(b))
 }
 
+// p2s char*(utf8) -> string
 func p2s(p unsafe.Pointer) string {
+	if p == nil {
+		return ""
+	}
 	return C.GoString((*C.char)(p))
 }
 
-func CommConnect() int {
+// kwastr2str utf8 char* -> string (with free)
+func kwastr2str(psz uintptr) string {
+	if psz == 0 {
+		return ""
+	}
+	defer free(psz)
+	return C.GoString((*C.char)(unsafe.Pointer(psz)))
+}
+
+func CommConnect() int32 {
 	kw_SetCharsetUtf8.Call(uintptr(1))
-	r1, _, _ := syscall.Syscall(kw_CommConnect.Addr(), 0, 0, 0, 0)
-	return int(r1)
+	r, _, _ := kw_CommConnect.Call()
+	return int32(r)
 }
-func CommRqData(rqName string, trCode string, prevNext int, screenNo string) int {
-	r1, _, _ := syscall.Syscall6(kw_CommRqDataW.Addr(), 4, s2u(rqName), s2u(trCode),
-		uintptr(prevNext), s2u(screenNo), 0, 0)
-	return int(r1)
+func CommRqData(rqName string, trCode string, prevNext int32, screenNo string) int32 {
+	r, _, _ := kw_CommRqDataW.Call(wstr(rqName), wstr(trCode), uintptr(prevNext),
+		wstr(screenNo))
+	return int32(r)
 }
-func GetLoginInfo() {}
-func SendOrder()    {}
-func SendOrderFO()  {}
+func GetLoginInfo(tag string) string {
+	r, _, _ := kw_GetLoginInfoA.Call(astr(tag))
+	return kwastr2str(r)
+}
+func SendOrder(rqName string, screenNo string, accNo string, orderType int32,
+	code string, qty int32, price int32, hogaGb string, orgOrderNo string) int32 {
+	r, _, _ := kw_SendOrderW.Call(wstr(rqName), wstr(screenNo), wstr(accNo),
+		uintptr(orderType), wstr(code), uintptr(qty), uintptr(price), wstr(hogaGb),
+		wstr(orgOrderNo))
+	return int32(r)
+}
+func SendOrderFO(rqName string, screenNo string, accNo string, code string,
+	ordKind int32, slbyTp string, ordTp string, qty int32, price string,
+	orgOrdNo string) int32 {
+	r, _, _ := kw_SendOrderFOW.Call(wstr(rqName), wstr(screenNo), wstr(accNo),
+		wstr(code), uintptr(ordKind), wstr(slbyTp), wstr(ordTp), uintptr(qty),
+		wstr(price), wstr(orgOrdNo))
+	return int32(r)
+}
+
 func SetInputValue(id string, value string) {
-	syscall.Syscall(kw_SetInputValueW.Addr(), 2, s2u(id), s2u(value), 0)
+	kw_SetInputValueW.Call(wstr(id), wstr(value))
 }
-func DisconnectRealData()       {}
-func GetRepeatCnt()             {}
-func CommKwRqData()             {}
-func GetAPIModulePath()         {}
-func GetCodeListByMarket()      {}
-func GetConnectState()          {}
-func GetMasterCodeName()        {}
-func GetMasterListedStockCnt()  {}
-func GetMasterConstruction()    {}
-func GetMasterListedStockDate() {}
-func GetMasterLastPrice()       {}
-func GetMasterStockState()      {}
-func GetDataCount()             {}
-func GetOutputValue()           {}
-func GetCommData(trCode string, recordName string, index int, itemName string) string {
-	r1, _, _ := kw_GetCommDataA.Call(s2b(trCode), s2b(recordName),
-		uintptr(index), s2b(itemName))
-	return p2s(unsafe.Pointer(r1))
+
+func DisconnectRealData(scnNo string) {
+	kw_DisconnectRealDataW.Call(wstr(scnNo))
 }
-func GetCommRealData()          {}
-func GetChejanData()            {}
-func GetThemeGroupList()        {}
-func GetThemeGroupCode()        {}
-func GetFutureList()            {}
-func GetFutureCodeByIndex()     {}
+
+func GetRepeatCnt(trCode string, recordName string) int32 {
+	r, _, _ := kw_GetRepeatCntW.Call(wstr(trCode), wstr(recordName))
+	return int32(r)
+}
+
+func CommKwRqData(arrCode string, bNext int32, codeCount int32, typeFlag int32,
+	rqName string, screenNo string) int32 {
+	r, _, _ := kw_CommKwRqDataW.Call(wstr(arrCode), uintptr(bNext),
+		uintptr(codeCount), uintptr(typeFlag), wstr(rqName), wstr(screenNo))
+	return int32(r)
+}
+
+func GetAPIModulePath() string {
+	r, _, _ := kw_GetAPIModulePathA.Call()
+	return kwastr2str(r)
+}
+
+func GetCodeListByMarket(market string) string {
+	r, _, _ := kw_GetCodeListByMarketA.Call(astr(market))
+	return kwastr2str(r)
+}
+
+func GetConnectState() int32 {
+	r, _, _ := kw_GetConnectState.Call()
+	return int32(r)
+}
+
+func GetMasterCodeName(trCode string) string {
+	r, _, _ := kw_GetMasterCodeNameA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetMasterListedStockCnt(trCode string) string {
+	r, _, _ := kw_GetMasterListedStockCntA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetMasterConstruction(trCode string) string {
+	r, _, _ := kw_GetMasterConstructionA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetMasterListedStockDate(trCode string) string {
+	r, _, _ := kw_GetMasterListedStockDateA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetMasterLastPrice(trCode string) string {
+	r, _, _ := kw_GetMasterLastPriceA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetMasterStockState(trCode string) string {
+	r, _, _ := kw_GetMasterStockStateA.Call(astr(trCode))
+	return kwastr2str(r)
+}
+
+func GetDataCount(recordName string) int32 {
+	r, _, _ := kw_GetDataCountW.Call(wstr(recordName))
+	return int32(r)
+}
+
+func GetOutputValue(recordName string, repeatIdx int32) string {
+	r, _, _ := kw_GetOutputValueA.Call(astr(recordName), uintptr(repeatIdx))
+	return kwastr2str(r)
+}
+
+func GetCommData(trCode string, recordName string, index int32, itemName string) string {
+	r, _, _ := kw_GetCommDataA.Call(astr(trCode), astr(recordName),
+		uintptr(index), astr(itemName))
+	return kwastr2str(r)
+}
+
+func GetCommRealData(trCode string, recordName string, index int32,
+	itemName string) string {
+	r, _, _ := kw_GetCommRealDataA.Call(astr(trCode), astr(recordName),
+		uintptr(index), astr(itemName))
+	return kwastr2str(r)
+}
+
+func GetChejanData(nFid int32) string {
+	r, _, _ := kw_GetChejanDataA.Call(uintptr(nFid))
+	return kwastr2str(r)
+}
+
+func GetThemeGroupList(nType int32) string {
+	r, _, _ := kw_GetThemeGroupCodeA.Call(uintptr(nType))
+	return kwastr2str(r)
+}
+
+func GetThemeGroupCode(themeCode string) string {
+	r, _, _ := kw_GetThemeGroupCodeA.Call(astr(themeCode))
+	return kwastr2str(r)
+}
+
+func GetFutureList() string {
+	r, _, _ := kw_GetFutureListA.Call()
+	return kwastr2str(r)
+}
+func GetFutureCodeByIndex(index int32) string {
+	r, _, _ := kw_GetFutureCodeByIndexA.Call(uintptr(index))
+	return kwastr2str(r)
+}
+
 func GetActPriceList()          {}
 func GetMonthList()             {}
 func GetOptionCode()            {}
@@ -207,7 +329,7 @@ func GetCommDataEx()            {}
 func SetRealRemove()            {}
 func GetMarketType()            {}
 func SetOnEventConnect(callback OnEventConnect) {
-	cb := syscall.NewCallbackCDecl(func(errCode int) (ret uintptr) {
+	cb := syscall.NewCallbackCDecl(func(errCode int32) (ret uintptr) {
 		if callback != nil {
 			callback(errCode)
 		}
@@ -219,7 +341,7 @@ func SetOnEventConnect(callback OnEventConnect) {
 func SetOnReceiveTrData(callback OnReceiveTrData) {
 	cb := syscall.NewCallbackCDecl(func(scrNo unsafe.Pointer,
 		rqName unsafe.Pointer, trCode unsafe.Pointer, recordName unsafe.Pointer,
-		prevNext unsafe.Pointer, dataLength int, errorCode unsafe.Pointer,
+		prevNext unsafe.Pointer, dataLength int32, errorCode unsafe.Pointer,
 		message unsafe.Pointer, splmMsg unsafe.Pointer) (ret uintptr) {
 		if callback != nil {
 			callback(p2s(scrNo), p2s(rqName), p2s(trCode), p2s(recordName),
@@ -240,7 +362,10 @@ func SetOnReceiveConditionVer()  {}
 func Wait() {
 	syscall.Syscall(kw_Wait.Addr(), 0, 0, 0, 0)
 }
-func Free()           {}
-func FreeString()     {}
+
+func free(p uintptr) {
+	kw_Free.Call(p)
+}
+
 func Disconnect()     {}
 func SetCharsetUtf8() {}

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	kw "github.com/smok95/gokiwoom"
 )
 
 func main() {
 
-	kw.SetOnEventConnect(func(errCode int) {
+	kw.SetOnEventConnect(func(errCode int32) {
 		if errCode == 0 {
 			fmt.Println("접속 성공")
 
@@ -21,12 +22,17 @@ func main() {
 	})
 
 	kw.SetOnReceiveTrData(func(scrNo string, rqName string, trCode string,
-		recordName string, prevNext string, dataLength int, errorCode string,
+		recordName string, prevNext string, dataLength int32, errorCode string,
 		message string, splmMsg string) {
 		fmt.Printf("OnReceiveTrData, scrNo=%s, rqName=%s, trCode=%s, recordName=%s\n",
 			scrNo, rqName, trCode, recordName)
-		temp := kw.GetCommData(trCode, recordName, 0, "종목명")
-		fmt.Println(temp)
+		name := kw.GetCommData(trCode, recordName, 0, "종목명")
+		fmt.Println(name)
+
+		code := kw.GetCommData(trCode, recordName, 0, "종목코드")
+		code = strings.TrimSpace(code)
+		name2 := kw.GetMasterCodeName(code)
+		fmt.Printf("GetMasterCodeName('%s') => '%s'\n", code, name2)
 	})
 
 	ret := kw.CommConnect()
