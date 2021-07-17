@@ -7,9 +7,8 @@ import (
 )
 
 type OnEventConnect func(errCode int32)
-type OnReceiveTrData func(scrNo string, rqName string, trCode string,
-	recordName string, prevNext string, dataLength int32, errorCode string,
-	message string, splmMsg string)
+type OnReceiveTrData func(scrNo, rqName, trCode, recordName,
+	prevNext string, dataLength int32, errorCode, message, splmMsg string)
 
 var (
 	kw = syscall.NewLazyDLL("kw_.dll")
@@ -40,44 +39,50 @@ var (
 	kw_GetMasterLastPriceA       = kw.NewProc("kw_GetMasterLastPriceA")
 	kw_GetMasterStockStateA      = kw.NewProc("kw_GetMasterStockStateA")
 	//kw_GetDataCountA              = kw.NewProc("kw_GetDataCountA")
-	kw_GetDataCountW              = kw.NewProc("kw_GetDataCountW")
-	kw_GetOutputValueA            = kw.NewProc("kw_GetOutputValueA")
-	kw_GetCommDataA               = kw.NewProc("kw_GetCommDataA")
-	kw_GetCommDataW               = kw.NewProc("kw_GetCommDataW")
-	kw_GetCommRealDataA           = kw.NewProc("kw_GetCommRealDataA")
-	kw_GetChejanDataA             = kw.NewProc("kw_GetChejanDataA")
-	kw_GetThemeGroupListA         = kw.NewProc("kw_GetThemeGroupListA")
-	kw_GetThemeGroupCodeA         = kw.NewProc("kw_GetThemeGroupCodeA")
-	kw_GetFutureListA             = kw.NewProc("kw_GetFutureListA")
-	kw_GetFutureCodeByIndexA      = kw.NewProc("kw_GetFutureCodeByIndexA")
-	kw_GetActPriceListA           = kw.NewProc("kw_GetActPriceListA")
-	kw_GetMonthListA              = kw.NewProc("kw_GetMonthListA")
-	kw_GetOptionCodeA             = kw.NewProc("kw_GetOptionCodeA")
-	kw_GetOptionCodeByMonthA      = kw.NewProc("kw_GetOptionCodeByMonthA")
-	kw_GetOptionCodeByActPriceA   = kw.NewProc("kw_GetOptionCodeByActPriceA")
-	kw_GetSFutureListA            = kw.NewProc("kw_GetSFutureListA")
-	kw_GetSFutureCodeByIndexA     = kw.NewProc("kw_GetSFutureCodeByIndexA")
-	kw_GetSActPriceListA          = kw.NewProc("kw_GetSActPriceListA")
-	kw_GetSMonthListA             = kw.NewProc("kw_GetSMonthListA")
-	kw_GetSOptionCodeA            = kw.NewProc("kw_GetSOptionCodeA")
-	kw_GetSOptionCodeByMonthA     = kw.NewProc("kw_GetSOptionCodeByMonthA")
-	kw_GetSOptionCodeByActPriceA  = kw.NewProc("kw_GetSOptionCodeByActPriceA")
-	kw_GetSFOBasisAssetListA      = kw.NewProc("kw_GetSFOBasisAssetListA")
-	kw_GetOptionATMA              = kw.NewProc("kw_GetOptionATMA")
-	kw_GetSOptionATMA             = kw.NewProc("kw_GetSOptionATMA")
-	kw_GetBranchCodeNameA         = kw.NewProc("kw_GetBranchCodeNameA")
-	kw_SendOrderCreditA           = kw.NewProc("kw_SendOrderCreditA")
-	kw_KOA_FunctionsA             = kw.NewProc("kw_KOA_FunctionsA")
-	kw_SetInfoDataA               = kw.NewProc("kw_SetInfoDataA")
-	kw_SetInfoDataW               = kw.NewProc("kw_SetInfoDataW")
-	kw_SetRealRegA                = kw.NewProc("kw_SetRealRegA")
-	kw_GetConditionLoad           = kw.NewProc("kw_GetConditionLoad")
-	kw_GetConditionNameListA      = kw.NewProc("kw_GetConditionNameListA")
-	kw_SendConditionA             = kw.NewProc("kw_SendConditionA")
-	kw_SendConditionStopA         = kw.NewProc("kw_SendConditionStopA")
-	kw_GetCommDataExA             = kw.NewProc("kw_GetCommDataExA")
-	kw_SetRealRemoveA             = kw.NewProc("kw_SetRealRemoveA")
-	kw_GetMarketTypeA             = kw.NewProc("kw_GetMarketTypeA")
+	kw_GetDataCountW             = kw.NewProc("kw_GetDataCountW")
+	kw_GetOutputValueA           = kw.NewProc("kw_GetOutputValueA")
+	kw_GetCommDataA              = kw.NewProc("kw_GetCommDataA")
+	kw_GetCommDataW              = kw.NewProc("kw_GetCommDataW")
+	kw_GetCommRealDataA          = kw.NewProc("kw_GetCommRealDataA")
+	kw_GetChejanDataA            = kw.NewProc("kw_GetChejanDataA")
+	kw_GetThemeGroupListA        = kw.NewProc("kw_GetThemeGroupListA")
+	kw_GetThemeGroupCodeA        = kw.NewProc("kw_GetThemeGroupCodeA")
+	kw_GetFutureListA            = kw.NewProc("kw_GetFutureListA")
+	kw_GetFutureCodeByIndexA     = kw.NewProc("kw_GetFutureCodeByIndexA")
+	kw_GetActPriceListA          = kw.NewProc("kw_GetActPriceListA")
+	kw_GetMonthListA             = kw.NewProc("kw_GetMonthListA")
+	kw_GetOptionCodeA            = kw.NewProc("kw_GetOptionCodeA")
+	kw_GetOptionCodeByMonthA     = kw.NewProc("kw_GetOptionCodeByMonthA")
+	kw_GetOptionCodeByActPriceA  = kw.NewProc("kw_GetOptionCodeByActPriceA")
+	kw_GetSFutureListA           = kw.NewProc("kw_GetSFutureListA")
+	kw_GetSFutureCodeByIndexA    = kw.NewProc("kw_GetSFutureCodeByIndexA")
+	kw_GetSActPriceListA         = kw.NewProc("kw_GetSActPriceListA")
+	kw_GetSMonthListA            = kw.NewProc("kw_GetSMonthListA")
+	kw_GetSOptionCodeA           = kw.NewProc("kw_GetSOptionCodeA")
+	kw_GetSOptionCodeByMonthA    = kw.NewProc("kw_GetSOptionCodeByMonthA")
+	kw_GetSOptionCodeByActPriceA = kw.NewProc("kw_GetSOptionCodeByActPriceA")
+	kw_GetSFOBasisAssetListA     = kw.NewProc("kw_GetSFOBasisAssetListA")
+	kw_GetOptionATMA             = kw.NewProc("kw_GetOptionATMA")
+	kw_GetSOptionATMA            = kw.NewProc("kw_GetSOptionATMA")
+	kw_GetBranchCodeNameA        = kw.NewProc("kw_GetBranchCodeNameA")
+	//kw_SendOrderCreditA           = kw.NewProc("kw_SendOrderCreditA")
+	kw_SendOrderCreditW = kw.NewProc("kw_SendOrderCreditW")
+	kw_KOA_FunctionsA   = kw.NewProc("kw_KOA_FunctionsA")
+	//kw_SetInfoDataA               = kw.NewProc("kw_SetInfoDataA")
+	kw_SetInfoDataW = kw.NewProc("kw_SetInfoDataW")
+	//kw_SetRealRegA                = kw.NewProc("kw_SetRealRegA")
+	kw_SetRealRegW           = kw.NewProc("kw_SetRealRegW")
+	kw_GetConditionLoad      = kw.NewProc("kw_GetConditionLoad")
+	kw_GetConditionNameListA = kw.NewProc("kw_GetConditionNameListA")
+	//kw_SendConditionA             = kw.NewProc("kw_SendConditionA")
+	kw_SendConditionW = kw.NewProc("kw_SendConditionW")
+	//kw_SendConditionStopA         = kw.NewProc("kw_SendConditionStopA")
+	kw_SendConditionStopW = kw.NewProc("kw_SendConditionStopW")
+	kw_GetCommDataExA     = kw.NewProc("kw_GetCommDataExA")
+	//kw_SetRealRemoveA             = kw.NewProc("kw_SetRealRemoveA")
+	kw_SetRealRemoveW = kw.NewProc("kw_SetRealRemoveW")
+	//kw_GetMarketTypeA             = kw.NewProc("kw_GetMarketTypeA")
+	kw_GetMarketTypeW             = kw.NewProc("kw_GetMarketTypeW")
 	kw_SetOnEventConnect          = kw.NewProc("kw_SetOnEventConnect")
 	kw_SetOnReceiveTrDataA        = kw.NewProc("kw_SetOnReceiveTrDataA")
 	kw_SetOnReceiveRealDataA      = kw.NewProc("kw_SetOnReceiveRealDataA")
@@ -91,43 +96,6 @@ var (
 	kw_FreeStringA                = kw.NewProc("kw_FreeStringA")
 	kw_Disconnect                 = kw.NewProc("kw_Disconnect")
 	kw_SetCharsetUtf8             = kw.NewProc("kw_SetCharsetUtf8")
-	/*
-		typedef void (*kw_OnReceiveTrDataW)(ScrNo, PCWSTR sRQName,
-			PCWSTR sTrCode, PCWSTR sRecordName, PCWSTR sPrevNext, long nDataLength,
-			PCWSTR sErrorCode, PCWSTR sMessage, PCWSTR sSplmMsg);
-		typedef void (*kw_OnReceiveTrDataA)(PCSTR sScrNo, PCSTR sRQName,
-			PCSTR sTrCode, PCSTR sRecordName, PCSTR sPrevNext, long nDataLength,
-			PCSTR sErrorCode, PCSTR sMessage, PCSTR sSplmMsg);
-
-		typedef void (*kw_OnReceiveRealDataW)(PCWSTR sRealKey,
-			PCWSTR sRealType, PCWSTR sRealData);
-		typedef void (*kw_OnReceiveRealDataA)(PCSTR sRealKey,
-			PCSTR sRealType, PCSTR sRealData);
-
-		typedef void (*kw_OnReceiveMsgW)(PCWSTR sScrNo, PCWSTR sRQName,
-			PCWSTR sTrCode, PCWSTR sMsg);
-		typedef void (*kw_OnReceiveMsgA)(PCSTR sScrNo, PCSTR sRQName,
-			PCSTR sTrCode, PCSTR sMsg);
-
-		typedef void (*kw_OnReceiveChejanDataW)(PCWSTR sGubun, long nItemCnt,
-			PCWSTR sFIdList);
-		typedef void (*kw_OnReceiveChejanDataA)(PCSTR sGubun, long nItemCnt,
-			PCSTR sFIdList);
-
-		typedef void (*kw_OnReceiveRealConditionW)(PCWSTR sTrCode,
-			PCWSTR strType, PCWSTR strConditionName, PCWSTR strConditionIndex);
-		typedef void (*kw_OnReceiveRealConditionA)(PCSTR sTrCode,
-			PCSTR strType, PCSTR strConditionName, PCSTR strConditionIndex);
-
-		typedef void (*kw_OnReceiveTrConditionW)(PCWSTR sScrNo,
-			PCWSTR strCodeList, PCWSTR strConditionName, int32 nIndex, int32 nNext);
-		typedef void (*kw_OnReceiveTrConditionA)(PCSTR sScrNo,
-			PCSTR strCodeList, PCSTR strConditionName, int32 nIndex, int32 nNext);
-
-		typedef void (*kw_OnReceiveConditionVerW)(long lRet, PCWSTR sMsg);
-		typedef void (*kw_OnReceiveConditionVerA)(long lRet, PCSTR sMsg);
-	*/
-
 )
 
 // wstr string -> wchar_t*
@@ -164,7 +132,7 @@ func CommConnect() int32 {
 	r, _, _ := kw_CommConnect.Call()
 	return int32(r)
 }
-func CommRqData(rqName string, trCode string, prevNext int32, screenNo string) int32 {
+func CommRqData(rqName, trCode string, prevNext int32, screenNo string) int32 {
 	r, _, _ := kw_CommRqDataW.Call(wstr(rqName), wstr(trCode), uintptr(prevNext),
 		wstr(screenNo))
 	return int32(r)
@@ -173,23 +141,22 @@ func GetLoginInfo(tag string) string {
 	r, _, _ := kw_GetLoginInfoA.Call(astr(tag))
 	return kwastr2str(r)
 }
-func SendOrder(rqName string, screenNo string, accNo string, orderType int32,
-	code string, qty int32, price int32, hogaGb string, orgOrderNo string) int32 {
+func SendOrder(rqName, screenNo, accNo string, orderType int32,
+	code string, qty, price int32, hogaGb, orgOrderNo string) int32 {
 	r, _, _ := kw_SendOrderW.Call(wstr(rqName), wstr(screenNo), wstr(accNo),
 		uintptr(orderType), wstr(code), uintptr(qty), uintptr(price), wstr(hogaGb),
 		wstr(orgOrderNo))
 	return int32(r)
 }
-func SendOrderFO(rqName string, screenNo string, accNo string, code string,
-	ordKind int32, slbyTp string, ordTp string, qty int32, price string,
-	orgOrdNo string) int32 {
+func SendOrderFO(rqName, screenNo, accNo, code string, ordKind int32,
+	slbyTp, ordTp string, qty int32, price, orgOrdNo string) int32 {
 	r, _, _ := kw_SendOrderFOW.Call(wstr(rqName), wstr(screenNo), wstr(accNo),
 		wstr(code), uintptr(ordKind), wstr(slbyTp), wstr(ordTp), uintptr(qty),
 		wstr(price), wstr(orgOrdNo))
 	return int32(r)
 }
 
-func SetInputValue(id string, value string) {
+func SetInputValue(id, value string) {
 	kw_SetInputValueW.Call(wstr(id), wstr(value))
 }
 
@@ -197,13 +164,13 @@ func DisconnectRealData(scnNo string) {
 	kw_DisconnectRealDataW.Call(wstr(scnNo))
 }
 
-func GetRepeatCnt(trCode string, recordName string) int32 {
+func GetRepeatCnt(trCode, recordName string) int32 {
 	r, _, _ := kw_GetRepeatCntW.Call(wstr(trCode), wstr(recordName))
 	return int32(r)
 }
 
-func CommKwRqData(arrCode string, bNext int32, codeCount int32, typeFlag int32,
-	rqName string, screenNo string) int32 {
+func CommKwRqData(arrCode string, bNext, codeCount, typeFlag int32,
+	rqName, screenNo string) int32 {
 	r, _, _ := kw_CommKwRqDataW.Call(wstr(arrCode), uintptr(bNext),
 		uintptr(codeCount), uintptr(typeFlag), wstr(rqName), wstr(screenNo))
 	return int32(r)
@@ -214,6 +181,14 @@ func GetAPIModulePath() string {
 	return kwastr2str(r)
 }
 
+// GetCodeListByMarket 시장구분에 따른 종목코드를 반환한다.
+//
+// market
+//	0:장내, 3:ELW, 4:뮤추얼펀드, 5:신주인수권, 6:리츠,
+//	8:ETF, 9:하이일드펀드, 10:코스닥, 30:K-OTC, 50:코넥스(KONEX)
+//
+// 종목코드 리스트, 종목간 구분은 ";"이다.
+// https://download.kiwoom.com/web/openapi/kiwoom_openapi_plus_devguide_ver_1.5.pdf
 func GetCodeListByMarket(market string) string {
 	r, _, _ := kw_GetCodeListByMarketA.Call(astr(market))
 	return kwastr2str(r)
@@ -264,14 +239,13 @@ func GetOutputValue(recordName string, repeatIdx int32) string {
 	return kwastr2str(r)
 }
 
-func GetCommData(trCode string, recordName string, index int32, itemName string) string {
+func GetCommData(trCode, recordName string, index int32, itemName string) string {
 	r, _, _ := kw_GetCommDataA.Call(astr(trCode), astr(recordName),
 		uintptr(index), astr(itemName))
 	return kwastr2str(r)
 }
 
-func GetCommRealData(trCode string, recordName string, index int32,
-	itemName string) string {
+func GetCommRealData(trCode, recordName string, index int32, itemName string) string {
 	r, _, _ := kw_GetCommRealDataA.Call(astr(trCode), astr(recordName),
 		uintptr(index), astr(itemName))
 	return kwastr2str(r)
@@ -301,33 +275,150 @@ func GetFutureCodeByIndex(index int32) string {
 	return kwastr2str(r)
 }
 
-func GetActPriceList()          {}
-func GetMonthList()             {}
-func GetOptionCode()            {}
-func GetOptionCodeByMonth()     {}
-func GetOptionCodeByActPrice()  {}
-func GetSFutureList()           {}
-func GetSFutureCodeByIndex()    {}
-func GetSActPriceList()         {}
-func GetSMonthList()            {}
-func GetSOptionCode()           {}
-func GetSOptionCodeByMonth()    {}
-func GetSOptionCodeByActPrice() {}
-func GetSFOBasisAssetList()     {}
-func GetOptionATM()             {}
-func GetSOptionATM()            {}
-func GetBranchCodeName()        {}
-func SendOrderCredit()          {}
-func KOA_Functions()            {}
-func SetInfoData()              {}
-func SetRealReg()               {}
-func GetConditionLoad()         {}
-func GetConditionNameList()     {}
-func SendCondition()            {}
-func SendConditionStop()        {}
-func GetCommDataEx()            {}
-func SetRealRemove()            {}
-func GetMarketType()            {}
+func GetActPriceList() string {
+	r, _, _ := kw_GetActPriceListA.Call()
+	return kwastr2str(r)
+}
+
+func GetMonthList() string {
+	r, _, _ := kw_GetMonthListA.Call()
+	return kwastr2str(r)
+}
+
+func GetOptionCode(actPrice string, cp int32, month string) string {
+	r, _, _ := kw_GetOptionCodeA.Call(astr(actPrice), uintptr(cp),
+		astr(month))
+	return kwastr2str(r)
+}
+
+func GetOptionCodeByMonth(trCode string, cp int32, month string) string {
+	r, _, _ := kw_GetOptionCodeByMonthA.Call(astr(trCode), uintptr(cp),
+		astr(month))
+	return kwastr2str(r)
+}
+
+func GetOptionCodeByActPrice(trCode string, cp int32, tick int32) string {
+	r, _, _ := kw_GetOptionCodeByActPriceA.Call(astr(trCode), uintptr(cp),
+		uintptr(tick))
+	return kwastr2str(r)
+}
+
+func GetSFutureList(baseAssetCode string) string {
+	r, _, _ := kw_GetSFutureListA.Call(astr(baseAssetCode))
+	return kwastr2str(r)
+}
+
+func GetSFutureCodeByIndex(baseAssetCode string, index int32) string {
+	r, _, _ := kw_GetSFutureCodeByIndexA.Call(astr(baseAssetCode),
+		uintptr(index))
+	return kwastr2str(r)
+}
+
+func GetSActPriceList(baseAssetGb string) string {
+	r, _, _ := kw_GetSActPriceListA.Call(astr(baseAssetGb))
+	return kwastr2str(r)
+}
+
+func GetSMonthList(baseAssetGb string) string {
+	r, _, _ := kw_GetSMonthListA.Call(astr(baseAssetGb))
+	return kwastr2str(r)
+}
+
+func GetSOptionCode(baseAssetGb, actPrice string, cp int32, month string) string {
+	r, _, _ := kw_GetSOptionCodeA.Call(astr(baseAssetGb), astr(actPrice),
+		uintptr(cp), astr(month))
+	return kwastr2str(r)
+}
+
+func GetSOptionCodeByMonth(baseAssetGb, trCode string, cp int32, month string) string {
+	r, _, _ := kw_GetSOptionCodeByMonthA.Call(astr(baseAssetGb), astr(trCode),
+		uintptr(cp), astr(month))
+	return kwastr2str(r)
+}
+
+func GetSOptionCodeByActPrice(baseAssetGb, trCode string, cp int32, tick int32) string {
+	r, _, _ := kw_GetSOptionCodeByActPriceA.Call(astr(baseAssetGb), astr(trCode),
+		uintptr(cp), uintptr(tick))
+	return kwastr2str(r)
+}
+
+func GetSFOBasisAssetList() string {
+	r, _, _ := kw_GetSFOBasisAssetListA.Call()
+	return kwastr2str(r)
+}
+
+func GetOptionATM() string {
+	r, _, _ := kw_GetOptionATMA.Call()
+	return kwastr2str(r)
+}
+
+func GetSOptionATM(baseAssetGb string) string {
+	r, _, _ := kw_GetSOptionATMA.Call(astr(baseAssetGb))
+	return kwastr2str(r)
+}
+
+func GetBranchCodeName() string {
+	r, _, _ := kw_GetBranchCodeNameA.Call()
+	return kwastr2str(r)
+}
+
+func SendOrderCredit(rqName, screenNo, accNo string, orderType int32,
+	code string, qty, price int32, hogaGb, creditGb, loanDate,
+	orgOrderNo string) int32 {
+	r, _, _ := kw_SendOrderCreditW.Call(wstr(rqName), wstr(screenNo),
+		wstr(accNo), uintptr(orderType), wstr(code), uintptr(qty), uintptr(price),
+		wstr(hogaGb), wstr(creditGb), wstr(loanDate), wstr(orgOrderNo))
+	return int32(r)
+}
+
+func KOA_Functions(functionName, param string) string {
+	r, _, _ := kw_KOA_FunctionsA.Call(astr(functionName), astr(param))
+	return kwastr2str(r)
+}
+
+func SetInfoData(infoData string) int32 {
+	r, _, _ := kw_SetInfoDataW.Call(wstr(infoData))
+	return int32(r)
+}
+
+func SetRealReg(screenNo, codeList, fidList, optType string) int32 {
+	r, _, _ := kw_SetRealRegW.Call(wstr(screenNo), wstr(codeList),
+		wstr(fidList), wstr(optType))
+	return int32(r)
+}
+
+func GetConditionLoad() int32 {
+	r, _, _ := kw_GetConditionLoad.Call()
+	return int32(r)
+}
+
+func GetConditionNameList() string {
+	r, _, _ := kw_GetConditionNameListA.Call()
+	return kwastr2str(r)
+}
+
+func SendCondition(scrNo, conditionName string, index, search int32) int32 {
+	r, _, _ := kw_SendConditionW.Call(wstr(scrNo), wstr(conditionName),
+		uintptr(index), uintptr(search))
+	return int32(r)
+}
+
+func SendConditionStop(scrNo, conditionName string, index int32) {
+	kw_SendConditionStopW.Call(wstr(scrNo), wstr(conditionName),
+		uintptr(index))
+}
+
+// VARIANT 어떤식으로 처리하지? func GetCommDataEx() {}
+
+func SetRealRemove(scrNo, delCode string) {
+	kw_SetRealRemoveW.Call(wstr(scrNo), wstr(delCode))
+}
+
+func GetMarketType(trCode string) int32 {
+	r, _, _ := kw_GetMarketTypeW.Call(wstr(trCode))
+	return int32(r)
+}
+
 func SetOnEventConnect(callback OnEventConnect) {
 	cb := syscall.NewCallbackCDecl(func(errCode int32) (ret uintptr) {
 		if callback != nil {
@@ -353,19 +444,142 @@ func SetOnReceiveTrData(callback OnReceiveTrData) {
 
 	syscall.Syscall(kw_SetOnReceiveTrDataA.Addr(), 1, cb, 0, 0)
 }
-func SetOnReceiveRealData()      {}
-func SetOnReceiveMsg()           {}
-func SetOnReceiveChejanData()    {}
-func SetOnReceiveRealCondition() {}
-func SetOnReceiveTrCondition()   {}
-func SetOnReceiveConditionVer()  {}
+
+type OnReceiveRealData func(realKey, realType, realData string)
+
+func SetOnReceiveRealData(callback OnReceiveRealData) {
+	cb := syscall.NewCallbackCDecl(func(realKey unsafe.Pointer,
+		realType unsafe.Pointer, realData unsafe.Pointer) (ret uintptr) {
+		if callback != nil {
+			callback(p2s(realKey), p2s(realType), p2s(realData))
+		}
+		return
+	})
+
+	kw_SetOnReceiveRealDataA.Call(cb)
+}
+
+type OnReceiveMsg func(scrNo, rqName, trCode, msg string)
+
+func SetOnReceiveMsg(callback OnReceiveMsg) {
+	cb := syscall.NewCallbackCDecl(func(r1, r2, r3, r4 unsafe.Pointer) (ret uintptr) {
+		if callback != nil {
+			callback(p2s(r1), p2s(r2), p2s(r3), p2s(r4))
+		}
+		return
+	})
+	kw_SetOnReceiveMsgA.Call(cb)
+}
+
+type OnReceiveChejanData func(gubun string, itemCnt int32, fidList string)
+
+func SetOnReceiveChejanData(callback OnReceiveChejanData) {
+	cb := syscall.NewCallbackCDecl(func(r1 unsafe.Pointer, r2 int32,
+		r3 unsafe.Pointer) (ret uintptr) {
+		if callback != nil {
+			callback(p2s(r1), r2, p2s(r3))
+		}
+		return
+	})
+
+	kw_SetOnReceiveChejanDataA.Call(cb)
+}
+
+type OnReceiveRealCondition func(code, sType, conditionName, conditionIndex string)
+
+func SetOnReceiveRealCondition(callback OnReceiveRealCondition) {
+	cb := syscall.NewCallbackCDecl(func(r1, r2, r3,
+		r4 unsafe.Pointer) (ret uintptr) {
+		if callback != nil {
+			callback(p2s(r1), p2s(r2), p2s(r3), p2s(r4))
+		}
+		return
+	})
+
+	kw_SetOnReceiveRealConditionA.Call(cb)
+}
+
+type OnReceiveTrCondition func(scrNo, codeList, conditionName string,
+	index, next int32)
+
+func SetOnReceiveTrCondition(callback OnReceiveTrCondition) {
+	cb := syscall.NewCallbackCDecl(func(r1, r2, r3 unsafe.Pointer,
+		r4, r5 int32) (ret uintptr) {
+		if callback != nil {
+			callback(p2s(r1), p2s(r2), p2s(r3), r4, r5)
+		}
+		return
+	})
+
+	kw_SetOnReceiveTrConditionA.Call(cb)
+}
+
+type OnReceiveConditionVer func(ret int32, msg string)
+
+func SetOnReceiveConditionVer(callback OnReceiveConditionVer) {
+	cb := syscall.NewCallbackCDecl(func(r1 int32, r2 unsafe.Pointer) (ret uintptr) {
+		if callback != nil {
+			callback(r1, p2s(r2))
+		}
+		return
+	})
+
+	kw_SetOnReceiveConditionVerA.Call(cb)
+}
+
 func Wait() {
-	syscall.Syscall(kw_Wait.Addr(), 0, 0, 0, 0)
+	kw_Wait.Call()
 }
 
 func free(p uintptr) {
 	kw_Free.Call(p)
 }
 
-func Disconnect()     {}
-func SetCharsetUtf8() {}
+func Disconnect() {
+	kw_Disconnect.Call()
+}
+
+/* cgo 방식
+
+// 라이브러리 경로 및 라이브러리 설정
+//#cgo LDFLAGS: -L./ -lkw_
+//#include <stdlib.h>
+//#include "kw_.h"
+//
+//void onEventConnect(int nErrCode);
+//
+//void onReceiveRealData(char* sRealKey, char* sRealType, char* sRealData);
+import "C"
+import "unsafe"
+
+func setInputValue(id string, value string) {
+	cId := C.CString(id)
+	cVal := C.CString(value)
+	C.kw_SetInputValueA(cId, cVal)
+	C.free(unsafe.Pointer(cId))
+	C.free(unsafe.Pointer(cVal))
+}
+
+//export onEventConnect
+func onEventConnect(nErrCode C.int) {
+	if kw.onConnectResult != nil {
+		kw.onConnectResult(kw, int(nErrCode))
+		cstr := C.CString("005930")
+		ret := C.kw_GetMasterCodeNameA(cstr)
+		C.free(unsafe.Pointer(cstr))
+	}
+}
+
+//export onReceiveTrData
+func onReceiveTrData(sScrNo *C.char, sRQName *C.char, sTrCode *C.char,
+	sRecordName *C.char, sPrevNext *C.char, nDataLength C.long,
+	sErrorCode *C.char, sMessage *C.char, sSplmMsg *C.char) {
+	fmt.Println("onReceiveTrData")
+}
+
+//export onReceiveRealData
+func onReceiveRealData(sRealKey *C.char, sRealType *C.char, sRealData *C.char) {
+	fmt.Printf("key=%s, type=%s, %s\n", C.GoString(sRealKey), C.GoString(sRealType), C.GoString(sRealData))
+}
+
+*/

@@ -16,14 +16,22 @@ func main() {
 			kw.SetInputValue("종목코드", "000660")
 			ret := kw.CommRqData("jktest", "opt10001", 0, "jktestscr")
 			fmt.Printf("CommRqData=%d\n", ret)
+
+			codelist := strings.Split(kw.GetCodeListByMarket("0"), ";")
+
+			fmt.Println(len(codelist), codelist)
 		} else {
-			fmt.Println("접속 실패")
+			fmt.Printf("%d) 접속 실패\n", errCode)
+			kw.Disconnect()
 		}
 	})
 
-	kw.SetOnReceiveTrData(func(scrNo string, rqName string, trCode string,
-		recordName string, prevNext string, dataLength int32, errorCode string,
-		message string, splmMsg string) {
+	kw.SetOnReceiveMsg(func(scrNo, rqName, trCode, msg string) {
+		fmt.Println("OnReceiveMsg", scrNo, rqName, trCode, msg)
+	})
+
+	kw.SetOnReceiveTrData(func(scrNo, rqName, trCode, recordName, prevNext string,
+		dataLength int32, errorCode, message, splmMsg string) {
 		fmt.Printf("OnReceiveTrData, scrNo=%s, rqName=%s, trCode=%s, recordName=%s\n",
 			scrNo, rqName, trCode, recordName)
 		name := kw.GetCommData(trCode, recordName, 0, "종목명")
