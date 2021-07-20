@@ -96,6 +96,7 @@ var (
 	kw_FreeStringA                = kw.NewProc("kw_FreeStringA")
 	kw_Disconnect                 = kw.NewProc("kw_Disconnect")
 	kw_SetCharsetUtf8             = kw.NewProc("kw_SetCharsetUtf8")
+	kw_Sleep                      = kw.NewProc("kw_Sleep")
 )
 
 // wstr string -> wchar_t*
@@ -537,6 +538,10 @@ func free(p uintptr) {
 
 func Disconnect() {
 	kw_Disconnect.Call()
+}
+
+func Sleep(millisecond int32) {
+	kw_Sleep.Call(uintptr(millisecond))
 }
 
 /* cgo 방식
