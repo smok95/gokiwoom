@@ -11,9 +11,9 @@ func main() {
 	// 연결상태 이벤트
 	kw.SetOnEventConnect(func(errCode int32) {
 		if errCode == 0 {
-			fmt.Println("접속 성공")
+			fmt.Println("연결 성공")
 		} else {
-			fmt.Println("접속 실패")
+			fmt.Println("연결 종료")
 		}
 
 		// 종료
@@ -21,7 +21,8 @@ func main() {
 	})
 
 	// 접속
-	kw.CommConnect()
+	eCode := kw.CommConnect()
+	fmt.Printf("CommConnect() => %d : '%s'\n", eCode, kw.OpErrText(int(eCode)))
 
 	kw.Wait()
 }
