@@ -90,8 +90,9 @@ func OpErrText(code int) string {
 }
 
 var (
-	kw = syscall.NewLazyDLL("kw_.dll")
-
+	kw                     = syscall.NewLazyDLL("kw_.dll")
+	kw_Initialize          = kw.NewProc("kw_Initialize")
+	kw_Uninitizlize        = kw.NewProc("kw_Uninitialize")
 	kw_CommConnect         = kw.NewProc("kw_CommConnect")
 	kw_CommRqDataA         = kw.NewProc("kw_CommRqDataA")
 	kw_CommRqDataW         = kw.NewProc("kw_CommRqDataW")
@@ -205,6 +206,15 @@ func kwastr2str(psz uintptr) string {
 	}
 	defer free(psz)
 	return C.GoString((*C.char)(unsafe.Pointer(psz)))
+}
+
+func Initialize(option int32) int32 {
+	r, _, _ := kw_Initialize.Call(uintptr(option))
+	return int32(r)
+}
+
+func Uninitialize() {
+	kw_Uninitizlize.Call()
 }
 
 // CommConnect 로그인 윈도우를 실행한다.

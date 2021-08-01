@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	kw.Initialize(1)
 
 	// 연결상태 이벤트
 	kw.SetOnEventConnect(func(errCode int32) {
@@ -25,4 +26,6 @@ func main() {
 	fmt.Printf("CommConnect() => %d : '%s'\n", eCode, kw.OpErrText(int(eCode)))
 
 	kw.Wait()
+
+	kw.Uninitialize()
 }
